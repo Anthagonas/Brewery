@@ -1,5 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using BeerManager.Models;
+using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace BeerManager.Controllers
 {
@@ -7,11 +10,26 @@ namespace BeerManager.Controllers
     [ApiController]
     public class BreweryController : ControllerBase
     {
+
+        #region DataSet
+        List<Beer> beers = new List<Beer>{
+                    new Beer
+                    {
+                        AlcoholContent  = 6.0,
+                        BreweryId       = "123456789",
+                        Id              = "987654321",
+                        BreweryName     = "a brewery",
+                        Name            = "good Beer",
+                        Price           = 3.4
+                    }
+        };
+        #endregion
+
         // GET brewery/breweryId
         [HttpGet("{breweryId}")]
-        public string Get(string breweryId)
+        public List<Beer> GetBeersByBrewery(string breweryId)
         {
-            throw new NotImplementedException("Get method at brewery not implemented");
+            return beers.Where(beer => beer.BreweryId == breweryId).ToList();
         }
 
         // POST brewery/breweryId
