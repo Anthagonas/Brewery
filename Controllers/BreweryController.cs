@@ -1,39 +1,31 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace Brewery.Controllers
+namespace BeerManager.Controllers
 {
+    [Route("brewery")]
     [ApiController]
-    [Route("Brewery")]
     public class BreweryController : ControllerBase
     {
-        private static readonly string[] Summaries = new[]
+        // GET brewery/breweryId
+        [HttpGet("{breweryId}")]
+        public string Get(string breweryId)
         {
-            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-        };
-
-        private readonly ILogger<BreweryController> _logger;
-
-        public BreweryController(ILogger<BreweryController> logger)
-        {
-            _logger = logger;
+            throw new NotImplementedException("Get method at brewery not implemented");
         }
 
-        [HttpGet]
-        public IEnumerable<WeatherForecast> Get()
+        // POST brewery/breweryId
+        [HttpPost]
+        public void Post(string breweryId, [FromBody] string newBeer)
         {
-            var rng = new Random();
-            return Enumerable.Range(1, 5).Select(index => new WeatherForecast
-            {
-                Date = DateTime.Now.AddDays(index),
-                TemperatureC = rng.Next(-20, 55),
-                Summary = Summaries[rng.Next(Summaries.Length)]
-            })
-            .ToArray();
+            throw new NotImplementedException("Post method at brewery not implemented");
+        }
+
+        // DELETE brewery/breweryId/beerId
+        [HttpDelete("{breweryId}/{beerId}")]
+        public void Delete(string breweryId, string beerId)
+        {
+            throw new NotImplementedException("Delete method at brewery not implemented");
         }
     }
 }
