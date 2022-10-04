@@ -36,23 +36,32 @@ namespace BeerManager.Controllers
 
         // GET brewery/breweryId
         [HttpGet("{breweryId}")]
-        public List<Beer> GetBeersByBrewery(string breweryId)
+        public IActionResult GetBeersByBrewery(string breweryId)
         {
-            return beers.Where(beer => beer.BreweryId == breweryId).ToList();
+            List<Beer> result = beers.Where(beer => beer.BreweryId == breweryId).ToList();
+
+            if (result?.Any() ?? false)
+            {
+                return Ok(beers.Where(beer => beer.BreweryId == breweryId).ToList());
+            }
+            return NotFound();
         }
 
         // POST brewery/breweryId
         [HttpPost("{breweryId}")]
-        public void AddBeer(string breweryId, [FromBody] string newBeer)
+        public IActionResult AddBeer(string breweryId, [FromBody] Beer newBeer)
         {
-            beers.Add(JsonSerializer.Deserialize<Beer>(newBeer));
+            newBeer.Id = Guid.NewGuid().ToString();
+            beers.Add(newBeer);
+            return CreatedAtAction(null, newBeer);
         }
 
         // DELETE brewery/breweryId/beerId
         [HttpDelete("{breweryId}/{beerId}")]
-        public void DeleteBeer(string breweryId, string beerId)
+        public IActionResult DeleteBeer(string breweryId, string beerId)
         {
             beers.RemoveAll(beer => beer.Id == beerId && beer.BreweryId == breweryId);
+            return NoContent();
         }
     }
 }
