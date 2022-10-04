@@ -21,6 +21,15 @@ namespace BeerManager.Controllers
                         BreweryName     = "a brewery",
                         Name            = "good Beer",
                         Price           = 3.4
+                    },
+                    new Beer
+                    {
+                        AlcoholContent  = 3.0,
+                        BreweryId       = "000000001",
+                        Id              = "100000000",
+                        BreweryName     = "an other brewery",
+                        Name            = "excellent Beer",
+                        Price           = 2.6
                     }
         };
         #endregion
