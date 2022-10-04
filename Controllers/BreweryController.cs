@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 
 namespace BeerManager.Controllers
 {
@@ -10,7 +11,6 @@ namespace BeerManager.Controllers
     [ApiController]
     public class BreweryController : ControllerBase
     {
-
         #region DataSet
         List<Beer> beers = new List<Beer>{
                     new Beer
@@ -33,10 +33,10 @@ namespace BeerManager.Controllers
         }
 
         // POST brewery/breweryId
-        [HttpPost]
+        [HttpPost("{breweryId}")]
         public void Post(string breweryId, [FromBody] string newBeer)
         {
-            throw new NotImplementedException("Post method at brewery not implemented");
+            beers.Add(JsonSerializer.Deserialize<Beer>(newBeer));
         }
 
         // DELETE brewery/breweryId/beerId
