@@ -43,7 +43,7 @@ namespace BeerManager.Controllers
         [HttpDelete("{breweryId}/{beerId}")]
         public void Delete(string breweryId, string beerId)
         {
-            throw new NotImplementedException("Delete method at brewery not implemented");
+            beers.RemoveAll(beer => beer.Id == beerId && beer.BreweryId == breweryId);
         }
     }
 }
