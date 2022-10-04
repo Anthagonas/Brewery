@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.Json;
 
 namespace BeerManager.Controllers
 {
@@ -52,6 +51,7 @@ namespace BeerManager.Controllers
         public IActionResult AddBeer(string breweryId, [FromBody] Beer newBeer)
         {
             newBeer.Id = Guid.NewGuid().ToString();
+            newBeer.BreweryId = breweryId;
             beers.Add(newBeer);
             return CreatedAtAction(null, newBeer);
         }
