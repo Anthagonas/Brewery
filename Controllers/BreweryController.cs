@@ -34,14 +34,14 @@ namespace BeerManager.Controllers
 
         // POST brewery/breweryId
         [HttpPost("{breweryId}")]
-        public void Post(string breweryId, [FromBody] string newBeer)
+        public void AddBeer(string breweryId, [FromBody] string newBeer)
         {
             beers.Add(JsonSerializer.Deserialize<Beer>(newBeer));
         }
 
         // DELETE brewery/breweryId/beerId
         [HttpDelete("{breweryId}/{beerId}")]
-        public void Delete(string breweryId, string beerId)
+        public void DeleteBeer(string breweryId, string beerId)
         {
             beers.RemoveAll(beer => beer.Id == beerId && beer.BreweryId == breweryId);
         }
