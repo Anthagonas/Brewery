@@ -22,7 +22,7 @@ namespace BeerManager.Controllers
         #endregion
 
         // PATCH wholesaler/wholesalerId/beerId
-        [HttpPatch("{wholesalerId}")]
+        [HttpPatch("{wholesalerId}/{beerId}")]
         public IActionResult ModifyBeerStock(string wholesalerId, string beerId, [FromBody] string newStockAmount)
         {
             var wholesaler = wholesalers.SingleOrDefault(wholesaler => wholesaler.Id == wholesalerId);
