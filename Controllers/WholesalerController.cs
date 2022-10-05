@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace BeerManager.Controllers
 {
@@ -10,7 +11,7 @@ namespace BeerManager.Controllers
     public class WholesalerController : ControllerBase
     {
         #region DataSet
-        List<Wholesaler> beers = new List<Wholesaler>{
+        List<Wholesaler> wholesalers = new List<Wholesaler>{
                     new Wholesaler
                     {
                         Id = "777777777",
@@ -22,9 +23,22 @@ namespace BeerManager.Controllers
 
         // PATCH wholesaler/wholesalerId/beerId
         [HttpPatch("{wholesalerId}")]
-        public void ModifyBeerStock(string wholesalerId, string beerId, [FromBody] string newStockAmount)
+        public IActionResult ModifyBeerStock(string wholesalerId, string beerId, [FromBody] string newStockAmount)
         {
-            throw new NotImplementedException();
+            var wholesaler = wholesalers.SingleOrDefault(wholesaler => wholesaler.Id == wholesalerId);
+            if(wholesaler is null)
+            {
+                throw new NotImplementedException(); //TODO no wholesaler matching
+            }
+            if(wholesaler.Stock.Any(beer => beer.Key == beerId))
+            {
+                wholesaler.Stock[beerId] = int.Parse(newStockAmount);
+            }
+            else
+            {
+                throw new NotImplementedException(); //TODO no beer matching
+            }
+            return NoContent();
         }
 
         // POST wholesaler/wholesalerId
