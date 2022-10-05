@@ -43,9 +43,24 @@ namespace BeerManager.Controllers
 
         // POST wholesaler/wholesalerId
         [HttpPost("{wholesalerId}")]
-        public void AddBeer(string wholesalerId, [FromBody] string newBeerId)
+        public IActionResult AddBeer(string wholesalerId, [FromBody] Dictionary<string,int> newBeerStock)
         {
-            throw new NotImplementedException();
+            var wholesaler = wholesalers.SingleOrDefault(wholesaler => wholesaler.Id == wholesalerId);
+            if (wholesaler is null)
+            {
+                throw new NotImplementedException(); //TODO no wholesaler matching
+            }
+            if(newBeerStock.Keys.Count != 1)
+            {
+                throw new NotImplementedException(); //TODO 400 invalid beer count
+            }
+            var newBeer = newBeerStock.Single();
+            if (wholesaler.Stock.ContainsKey(newBeer.Key))
+            {
+                throw new NotImplementedException(); //TODO 400 beer already exists
+            }
+            wholesaler.Stock[newBeer.Key] = newBeer.Value;
+            return CreatedAtAction(null, newBeer.Key);
         }
     }
 }
