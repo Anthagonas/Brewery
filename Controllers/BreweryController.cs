@@ -60,7 +60,11 @@ namespace BeerManager.Controllers
         [HttpDelete("{breweryId}/{beerId}")]
         public IActionResult DeleteBeer(string breweryId, string beerId)
         {
-            beers.RemoveAll(beer => beer.Id == beerId && beer.BreweryId == breweryId);
+            var removedBeersCount = beers.RemoveAll(beer => beer.Id == beerId && beer.BreweryId == breweryId);
+            if(removedBeersCount == 0)
+            {
+                return NotFound("No matching beer with the given brewery ID");
+            }
             return NoContent();
         }
     }
