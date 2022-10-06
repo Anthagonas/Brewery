@@ -1,3 +1,4 @@
+using BeerManager.Repository;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -19,6 +20,8 @@ namespace BeerManager
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.AddSingleton<IBeerRepository, BeerRepository>();
+            services.AddSingleton<IWholesalerRepository, WholesalerRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
