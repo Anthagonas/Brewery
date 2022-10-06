@@ -47,5 +47,10 @@ namespace BeerManager.Repository
         {
             return beers.Where(beer => beer.BreweryId == breweryId).ToList();
         }
+
+        public double GetBeerPrice(string beerId)
+        {
+            return beers.Single(beer => beer.Id == beerId).Price;
+        }
     }
 }

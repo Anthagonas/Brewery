@@ -8,5 +8,6 @@ namespace BeerManager.Repository
         public void AddBeer(string breweryId, Beer newBeer);
         List<Beer> FindBeersByBreweryId(string breweryId);
         int DeleteBeer(string breweryId, string beerId);
+        double GetBeerPrice(string beerId);
     }
 }
