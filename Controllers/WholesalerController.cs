@@ -50,7 +50,7 @@ namespace BeerManager.Controllers
             {
                 throw new NotImplementedException(); //TODO no wholesaler matching
             }
-            if(newBeerStock.Keys.Count != 1)
+            if(!newBeerStock?.Any()??true || newBeerStock.Keys.Count > 1)
             {
                 throw new NotImplementedException(); //TODO 400 invalid beer count
             }
