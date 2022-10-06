@@ -1,4 +1,5 @@
 ﻿using BeerManager.Models;
+using BeerManager.Repository;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -10,38 +11,22 @@ namespace BeerManager.Controllers
     [ApiController]
     public class BreweryController : ControllerBase
     {
-        #region DataSet
-        List<Beer> beers = new List<Beer>{
-                    new Beer
-                    {
-                        AlcoholContent  = 6.0,
-                        BreweryId       = "123456789",
-                        Id              = "987654321",
-                        BreweryName     = "a brewery",
-                        Name            = "good Beer",
-                        Price           = 3.4
-                    },
-                    new Beer
-                    {
-                        AlcoholContent  = 3.0,
-                        BreweryId       = "000000001",
-                        Id              = "100000000",
-                        BreweryName     = "an other brewery",
-                        Name            = "excellent Beer",
-                        Price           = 2.6
-                    }
-        };
-        #endregion
+        IBeerRepository _beerRepository;
+
+        public BreweryController(IBeerRepository beerRepository)
+        {
+            _beerRepository = beerRepository ?? throw new ArgumentNullException(nameof(beerRepository));
+        }
 
         // GET brewery/breweryId
         [HttpGet("{breweryId}")]
         public IActionResult GetBeersByBrewery(string breweryId)
         {
-            List<Beer> result = beers.Where(beer => beer.BreweryId == breweryId).ToList();
+            List<Beer> result = _beerRepository.FindBeersByBreweryId(breweryId);
 
             if (result?.Any() ?? false)
             {
-                return Ok(beers.Where(beer => beer.BreweryId == breweryId).ToList());
+                return Ok(result);
             }
             return NotFound();
         }
@@ -50,9 +35,7 @@ namespace BeerManager.Controllers
         [HttpPost("{breweryId}")]
         public IActionResult AddBeer(string breweryId, [FromBody] Beer newBeer)
         {
-            newBeer.Id = Guid.NewGuid().ToString();
-            newBeer.BreweryId = breweryId;
-            beers.Add(newBeer);
+            _beerRepository.AddBeer(breweryId, newBeer);
             return CreatedAtAction(null, newBeer);
         }
 
@@ -60,7 +43,7 @@ namespace BeerManager.Controllers
         [HttpDelete("{breweryId}/{beerId}")]
         public IActionResult DeleteBeer(string breweryId, string beerId)
         {
-            var removedBeersCount = beers.RemoveAll(beer => beer.Id == beerId && beer.BreweryId == breweryId);
+            var removedBeersCount = _beerRepository.DeleteBeer(breweryId, beerId);
             if(removedBeersCount == 0)
             {
                 return NotFound("No matching beer with the given brewery ID");

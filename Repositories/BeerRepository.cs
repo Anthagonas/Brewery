@@ -1,6 +1,7 @@
 using BeerManager.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace BeerManager.Repository
 {
@@ -35,6 +36,16 @@ namespace BeerManager.Repository
             newBeer.Id = Guid.NewGuid().ToString();
             newBeer.BreweryId = breweryId;
             beers.Add(newBeer);
+        }
+
+        public int DeleteBeer(string breweryId, string beerId)
+        {
+            return beers.RemoveAll(beer => beer.Id == beerId && beer.BreweryId == breweryId);
+        }
+
+        public List<Beer> FindBeersByBreweryId(string breweryId)
+        {
+            return beers.Where(beer => beer.BreweryId == breweryId).ToList();
         }
     }
 }
