@@ -28,7 +28,7 @@ namespace BeerManager.Controllers
             var wholesaler = wholesalers.SingleOrDefault(wholesaler => wholesaler.Id == wholesalerId);
             if(wholesaler is null)
             {
-                throw new NotImplementedException(); //TODO no wholesaler matching
+                return BadRequest("Invalid wholesaler ID");
             }
             if(wholesaler.Stock.Any(beer => beer.Key == beerId))
             {
@@ -36,7 +36,7 @@ namespace BeerManager.Controllers
             }
             else
             {
-                throw new NotImplementedException(); //TODO no beer matching
+                return BadRequest("Invalid beer ID");
             }
             return NoContent();
         }
@@ -48,16 +48,16 @@ namespace BeerManager.Controllers
             var wholesaler = wholesalers.SingleOrDefault(wholesaler => wholesaler.Id == wholesalerId);
             if (wholesaler is null)
             {
-                throw new NotImplementedException(); //TODO no wholesaler matching
+                return BadRequest("Invalid wholesaler ID");
             }
             if(!newBeerStock?.Any()??true || newBeerStock.Keys.Count > 1)
             {
-                throw new NotImplementedException(); //TODO 400 invalid beer count
+                return BadRequest("Invalid beer count");
             }
             var newBeer = newBeerStock.Single();
             if (wholesaler.Stock.ContainsKey(newBeer.Key))
             {
-                throw new NotImplementedException(); //TODO 400 beer already exists
+                return BadRequest("Beer already exists for this wholesaler");
             }
             wholesaler.Stock[newBeer.Key] = newBeer.Value;
             return CreatedAtAction(null, newBeer.Key);
