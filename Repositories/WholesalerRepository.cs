@@ -32,6 +32,20 @@ namespace BeerManager.Repository
             wholesaler.Stock[beerId] = stockAmount;
         }
 
+        public int GetBeerStockAmount(string wholesalerId, string beerId)
+        {
+            var wholesaler = wholesalers.SingleOrDefault(wholesaler => wholesaler.Id == wholesalerId);
+            if (wholesaler is null)
+            {
+                throw new BadRequestException("The wholesaler must exist");
+            }
+            if (!wholesaler.Stock.ContainsKey(beerId))
+            {
+                throw new BadRequestException("The beer must be sold by the wholesaler");
+            }
+            return wholesaler.Stock[beerId];
+        }
+
         public void SetBeerStockAmount(string wholesalerId, string beerId, string newStockAmount)
         {
             var wholesaler = wholesalers.SingleOrDefault(wholesaler => wholesaler.Id == wholesalerId);
