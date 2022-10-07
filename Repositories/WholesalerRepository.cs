@@ -1,36 +1,52 @@
+using BeerManager.Exceptions;
 using BeerManager.Models;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace BeerManager.Repository
 {
     public class WholesalerRepository : IWholesalerRepository
     {
         #region DataSet
-        List<Beer> beers = new List<Beer>{
-                    new Beer
+        List<Wholesaler> wholesalers = new List<Wholesaler>{
+                    new Wholesaler
                     {
-                        AlcoholContent  = 6.0,
-                        BreweryId       = "123456789",
-                        Id              = "987654321",
-                        BreweryName     = "a brewery",
-                        Name            = "good Beer",
-                        Price           = 3.4
-                    },
-                    new Beer
-                    {
-                        AlcoholContent  = 3.0,
-                        BreweryId       = "000000001",
-                        Id              = "100000000",
-                        BreweryName     = "an other brewery",
-                        Name            = "excellent Beer",
-                        Price           = 2.6
+                        Id = "777777777",
+                        Name = "A wholesaler",
+                        Stock = new Dictionary<string, int>{ { "987654321", 10 } }
                     }
         };
         #endregion
 
         public void AddBeer(string wholesalerId, string beerId, int stockAmount)
         {
-            throw new System.NotImplementedException();
+            var wholesaler = wholesalers.SingleOrDefault(wholesaler => wholesaler.Id == wholesalerId);
+            if (wholesaler is null)
+            {
+                throw new BadRequestException("Invalid wholesaler ID");
+            }
+            if (wholesaler.Stock.ContainsKey(beerId))
+            {
+                throw new BadRequestException("Beer already exists for this wholesaler");
+            }
+            wholesaler.Stock[beerId] = stockAmount;
+        }
+
+        public void SetBeerStockAmount(string wholesalerId, string beerId, string newStockAmount)
+        {
+            var wholesaler = wholesalers.SingleOrDefault(wholesaler => wholesaler.Id == wholesalerId);
+            if (wholesaler is null)
+            {
+                throw new BadRequestException("Invalid wholesaler ID");
+            }
+            if (wholesaler.Stock.Any(beer => beer.Key == beerId))
+            {
+                wholesaler.Stock[beerId] = int.Parse(newStockAmount);
+            }
+            else
+            {
+                throw new BadRequestException("Invalid beer ID");
+            }
         }
     }
 }
