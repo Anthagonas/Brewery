@@ -7,7 +7,6 @@ namespace BeerManager.Repository
 {
     public class BeerRepository: IBeerRepository
     {
-
         #region DataSet
         List<Beer> beers = new List<Beer>{
                     new Beer
@@ -51,6 +50,11 @@ namespace BeerManager.Repository
         public double GetBeerPrice(string beerId)
         {
             return beers.Single(beer => beer.Id == beerId).Price;
+        }
+
+        public bool HasBeer(string beerId)
+        {
+            return beers.Any(beer => beer.Id == beerId);
         }
     }
 }

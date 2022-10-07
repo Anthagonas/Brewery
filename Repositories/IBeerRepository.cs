@@ -9,5 +9,6 @@ namespace BeerManager.Repository
         List<Beer> FindBeersByBreweryId(string breweryId);
         int DeleteBeer(string breweryId, string beerId);
         double GetBeerPrice(string beerId);
+        bool HasBeer(string beerId);
     }
 }
