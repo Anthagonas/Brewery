@@ -1,4 +1,6 @@
-﻿using BeerManager.Models;
+﻿using BeerManager.Exceptions;
+using BeerManager.Models;
+using BeerManager.Repository;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -10,34 +12,28 @@ namespace BeerManager.Controllers
     [ApiController]
     public class WholesalerController : ControllerBase
     {
-        #region DataSet
-        List<Wholesaler> wholesalers = new List<Wholesaler>{
-                    new Wholesaler
-                    {
-                        Id = "777777777",
-                        Name = "A wholesaler",
-                        Stock = new Dictionary<string, int>{ { "987654321", 10 } }
-                    }
-        };
-        #endregion
+        IWholesalerRepository _wholesalerRepository;
+        IBeerRepository _beerRepository;
+
+        public WholesalerController(IWholesalerRepository wholesalerRepository, IBeerRepository beerRepository)
+        {
+            _wholesalerRepository = wholesalerRepository ?? throw new ArgumentNullException(nameof(wholesalerRepository));
+            _beerRepository = beerRepository ?? throw new ArgumentNullException(nameof(beerRepository));
+        }
 
         // PATCH wholesaler/wholesalerId/beerId
         [HttpPatch("{wholesalerId}/{beerId}")]
         public IActionResult ModifyBeerStock(string wholesalerId, string beerId, [FromBody] string newStockAmount)
         {
-            var wholesaler = wholesalers.SingleOrDefault(wholesaler => wholesaler.Id == wholesalerId);
-            if(wholesaler is null)
+            try
             {
-                return BadRequest("Invalid wholesaler ID");
+                _wholesalerRepository.SetBeerStockAmount(wholesalerId, beerId, newStockAmount);
             }
-            if(wholesaler.Stock.Any(beer => beer.Key == beerId))
+            catch (BadRequestException e)
             {
-                wholesaler.Stock[beerId] = int.Parse(newStockAmount);
+                return BadRequest(e.Message);
             }
-            else
-            {
-                return BadRequest("Invalid beer ID");
-            }
+
             return NoContent();
         }
 
@@ -45,21 +41,24 @@ namespace BeerManager.Controllers
         [HttpPost("{wholesalerId}")]
         public IActionResult AddBeer(string wholesalerId, [FromBody] Dictionary<string,int> newBeerStock)
         {
-            var wholesaler = wholesalers.SingleOrDefault(wholesaler => wholesaler.Id == wholesalerId);
-            if (wholesaler is null)
-            {
-                return BadRequest("Invalid wholesaler ID");
-            }
-            if(!newBeerStock?.Any()??true || newBeerStock.Keys.Count > 1)
+            if (!newBeerStock?.Any() ?? true || newBeerStock.Keys.Count > 1)
             {
                 return BadRequest("Invalid beer count");
             }
             var newBeer = newBeerStock.Single();
-            if (wholesaler.Stock.ContainsKey(newBeer.Key))
+            if(!_beerRepository.HasBeer(newBeer.Key))
             {
-                return BadRequest("Beer already exists for this wholesaler");
+                return BadRequest("Invalid beerId");
             }
-            wholesaler.Stock[newBeer.Key] = newBeer.Value;
+
+            try { 
+                _wholesalerRepository.AddBeer(wholesalerId, newBeer.Key, newBeer.Value);
+            }
+            catch (BadRequestException e)
+            {
+                return BadRequest(e.Message);
+            }
+
             return CreatedAtAction(null, newBeer.Key);
         }
     }
