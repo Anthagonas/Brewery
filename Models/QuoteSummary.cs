@@ -8,7 +8,13 @@ namespace BeerManager.Models
     {
         public double TotalPrice { get; set; }
         public int TotalItems { get; set; }
+        public double AppliedDiscountInPercentage { get; set; }
         public List<QuoteDetail> Details { get; set; }
+
+        public QuoteSummary()
+        {
+            Details = new List<QuoteDetail>();
+        }
 
         public void AddNewElement(string name, int amount, double unitPrice)
         {
@@ -22,10 +28,12 @@ namespace BeerManager.Models
             TotalPrice = Details.Sum(line => line.Price);
             if(TotalItems > 20)
             {
+                AppliedDiscountInPercentage = 20;
                 TotalPrice = CalculateDiscount(TotalPrice, 20);
             }
             else if (TotalItems > 10)
             {
+                AppliedDiscountInPercentage = 10;
                 TotalPrice = CalculateDiscount(TotalPrice, 10);
             }
         }
